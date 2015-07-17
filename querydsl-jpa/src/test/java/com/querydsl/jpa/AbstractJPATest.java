@@ -544,13 +544,13 @@ public abstract class AbstractJPATest {
 
     @Test
     public void Date() {
-        assertEquals(2000,   query().from(cat).select(cat.birthdate.year()).fetchFirst().intValue());
+        assertEquals(2000, query().from(cat).select(cat.birthdate.year()).fetchFirst().intValue());
         assertEquals(200002, query().from(cat).select(cat.birthdate.yearMonth()).fetchFirst().intValue());
         assertEquals(2,      query().from(cat).select(cat.birthdate.month()).fetchFirst().intValue());
         //query().from(cat).select(cat.birthdate.week());
-        assertEquals(2,      query().from(cat).select(cat.birthdate.dayOfMonth()).fetchFirst().intValue());
-        assertEquals(3,      query().from(cat).select(cat.birthdate.hour()).fetchFirst().intValue());
-        assertEquals(4,      query().from(cat).select(cat.birthdate.minute()).fetchFirst().intValue());
+        assertEquals(2, query().from(cat).select(cat.birthdate.dayOfMonth()).fetchFirst().intValue());
+        assertEquals(3, query().from(cat).select(cat.birthdate.hour()).fetchFirst().intValue());
+        assertEquals(4, query().from(cat).select(cat.birthdate.minute()).fetchFirst().intValue());
         assertEquals(0,      query().from(cat).select(cat.birthdate.second()).fetchFirst().intValue());
     }
 
@@ -1136,22 +1136,22 @@ public abstract class AbstractJPATest {
     @NoBatooJPA
     public void Order_NullsFirst() {
         assertNull(query().from(cat)
-            .orderBy(cat.dateField.asc().nullsFirst())
-            .select(cat.dateField).fetchFirst());
+                .orderBy(cat.dateField.asc().nullsFirst())
+                .select(cat.dateField).fetchFirst());
     }
 
     @Test
     @NoBatooJPA
     public void Order_NullsLast() {
         assertNotNull(query().from(cat)
-            .orderBy(cat.dateField.asc().nullsLast())
-            .select(cat.dateField).fetchFirst());
+                .orderBy(cat.dateField.asc().nullsLast())
+                .select(cat.dateField).fetchFirst());
     }
 
     @Test
     public void Params() {
         Param<String> name = new Param<String>(String.class,"name");
-        assertEquals("Bob123",query().from(cat).where(cat.name.eq(name)).set(name, "Bob123")
+        assertEquals("Bob123", query().from(cat).where(cat.name.eq(name)).set(name, "Bob123")
                 .select(cat.name).fetchFirst());
     }
 
@@ -1599,6 +1599,14 @@ public abstract class AbstractJPATest {
         assertEquals(Arrays.asList(10,1,2,3,4,5,6),
                 query().from(animal).orderBy(JPAExpressions.type(animal).asc(), animal.id.asc())
                         .select(animal.id).fetch());
+    }
+
+    @Test
+    @ExcludeIn(DERBY)
+    public void Byte_Array() {
+        QSimpleTypes simpleTypes = QSimpleTypes.simpleTypes;
+        assertEquals(ImmutableList.of(), query().from(simpleTypes)
+                .where(simpleTypes.byteArray.eq(new byte[]{0, 1})).select(simpleTypes).fetch());
     }
 }
 
